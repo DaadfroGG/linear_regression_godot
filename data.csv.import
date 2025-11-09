@@ -1,17 +1,18 @@
 [remap]
 
-importer="csv_translation"
-type="Translation"
-uid="uid://bv1qr2so7xqv3"
+importer="com.timothyqiu.godot-csv-importer"
+type="Resource"
+uid="uid://bt3kjyona0ciw"
+path="res://.godot/imported/data.csv-3056cde343af584363ea8c444b529be8.res"
 
 [deps]
 
-files=["res://data.price.translation"]
-
 source_file="res://data.csv"
-dest_files=["res://data.price.translation"]
+dest_files=["res://.godot/imported/data.csv-3056cde343af584363ea8c444b529be8.res"]
 
 [params]
 
-compress=true
 delimiter=0
+headers=true
+detect_numbers=false
+force_float=true

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bqrxbpgmj4mm8"]
+[gd_scene load_steps=4 format=3 uid="uid://bqrxbpgmj4mm8"]
 
 [ext_resource type="Script" uid="uid://ceti1lauw1hth" path="res://main.gd" id="1_ig7tw"]
-[ext_resource type="PackedScene" uid="uid://bcgvehjsala1b" path="res://control.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bcgvehjsala1b" path="res://graph_ui.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://dad1hlt4h1g5v" path="res://data_ui.tscn" id="3_h2yge"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -11,6 +12,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ig7tw")
+learning_rate = 0.8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -45,7 +47,5 @@ theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="Graph2D" parent="VBoxContainer/HBoxContainer/MarginContainer2" instance=ExtResource("2_0xm2m")]
+[node name="Data" parent="VBoxContainer/HBoxContainer/MarginContainer2" instance=ExtResource("3_h2yge")]
 layout_mode = 2
-grid_color = Color(0.43137255, 0.43137255, 0.43137255, 0.6901961)
-line_color = Color(0.3771517, 0.6891098, 1, 1)
