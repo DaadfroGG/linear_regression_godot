@@ -14,6 +14,10 @@ config/name="linear regression"
 run/main_scene="uid://bqrxbpgmj4mm8"
 config/features=PackedStringArray("4.5", "Forward Plus")
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [editor]
 
 movie_writer/movie_file="/home/dkermia/Documents/linear_regression_godot/linear-regression/MOVIE.avi"

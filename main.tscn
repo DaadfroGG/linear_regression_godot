@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://bqrxbpgmj4mm8"]
+[gd_scene load_steps=6 format=3 uid="uid://bqrxbpgmj4mm8"]
 
 [ext_resource type="Script" uid="uid://ceti1lauw1hth" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bcgvehjsala1b" path="res://graph_ui.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dad1hlt4h1g5v" path="res://data_ui.tscn" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://beo5nrhjmk6to" path="res://loss_marker.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://ct6m7ulxw7ihl" path="res://loss_guides.gd" id="5_lquwl"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -12,7 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ig7tw")
-learning_rate = 0.8
+learning_rate = 0.5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -28,20 +30,20 @@ size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
 [node name="Graph2D" parent="VBoxContainer/HBoxContainer/MarginContainer" instance=ExtResource("2_0xm2m")]
+custom_minimum_size = Vector2(500, 500)
 layout_mode = 2
 grid_color = Color(0.43137255, 0.43137255, 0.43137255, 0.6901961)
 line_color = Color(0.3771517, 0.6891098, 1, 1)
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
@@ -49,3 +51,49 @@ theme_override_constants/margin_bottom = 25
 
 [node name="Data" parent="VBoxContainer/HBoxContainer/MarginContainer2" instance=ExtResource("3_h2yge")]
 layout_mode = 2
+
+[node name="MarginContainer5" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="LossMap" type="TextureRect" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5"]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+
+[node name="LossMarker" type="Control" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_1bvp3")
+
+[node name="LossGuides" type="Control" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_lquwl")
+m_label_offset = Vector2(0, -40)
+b_label_offset = Vector2(-80, -3)
+
+[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer" index="4"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer4"]
+layout_mode = 2
+text = "Randomize m and b"
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer4/Button" to="." method="_on_button_pressed"]
+
+[editable path="VBoxContainer/HBoxContainer/MarginContainer2/Data"]

@@ -1,20 +1,29 @@
 extends Control
 
+
+@onready var loss_map: TextureRect = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap
+@onready var loss_marker: Control = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap/LossMarker
+@onready var loss_guides: Control = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap/LossGuides
+
 @onready var graph: Graph2D = $VBoxContainer/HBoxContainer/MarginContainer/Graph2D
-@export var learning_rate := 0.01
 @onready var data_ui: Data_UI = $VBoxContainer/HBoxContainer/MarginContainer2/Data
+@export var learning_rate := 0.01
 const data = preload("res://data.csv")
 
 var time := 0.0
 var point_timer := 0.0
 
-# Dynamic function parameters (in normalized space)
+# Dynamic function parameters (normalized space)
 var m1 := 0.5
 var b1 := 0.5
 
 # Normalization factors
 var max_km := 1.0
 var max_price := 1.0
+
+# --- Centralized loss landscape ranges ---
+var m_range := Vector2(-2.5, 1.5)  # (min, max)
+var b_range := Vector2(-0.5, 2.5)  # (min, max)
 
 func _ready():
 	if data.records.size() > 0:
@@ -51,9 +60,9 @@ func _ready():
 
 	# Add the initial regression line
 	graph.add_function(func(x): return (m1 * (x / max_km) + b1) * max_price)
-func _process(delta):
-	time += delta
-	point_timer += delta
+	_generate_loss_landscape()
+
+func _process(_delta):
 
 	# --- Gradient descent on normalized data ---
 	var grad_m := 0.0
@@ -79,10 +88,54 @@ func _process(delta):
 	m1 -= learning_rate * grad_m
 	b1 -= learning_rate * grad_b
 
-	# --- De-normalized display values for printing ---
+	# --- Update marker position ---
+	var tex_size := loss_map.texture.get_size()
+	var marker_pos := Vector2(
+		(m1 - m_range.x) / (m_range.y - m_range.x) * tex_size.x,
+		(1.0 - (b1 - b_range.x) / (b_range.y - b_range.x)) * tex_size.y
+	)
+	loss_marker.update_marker(marker_pos)
+
+	# --- De-normalized display values ---
 	var m_real := (m1 * max_price) / max_km
 	var b_real := b1 * max_price
 	data_ui.update_data(m_real, b_real, loss)
+	loss_guides.update_guides(marker_pos, m1, b1)
 
 	graph.functions[0] = func(x): return (m1 * (x / max_km) + b1) * max_price
+
 	graph.queue_redraw()
+
+func _generate_loss_landscape():
+	var width := 256
+	var height := 256
+	var loss_image := Image.create_empty(width, height, false, Image.FORMAT_RGB8)
+
+	for y in height:
+		var b_try = lerp(b_range.x, b_range.y, float(y) / height)
+		for x in width:
+			var m_try = lerp(m_range.x, m_range.y, float(x) / width)
+			var loss := 0.0
+			var n := float(data.records.size())
+			for record in data.records:
+				var x_n = record["km_n"]
+				var y_n = record["price_n"]
+				var y_pred = m_try * x_n + b_try
+				var error = y_pred - y_n
+				loss += error * error
+			loss /= n
+
+			var color_val = clamp(loss * 5.0, 0.0, 1.0)
+			var color = Color(0, 1.0 - color_val, color_val)
+			loss_image.set_pixel(x, height - y - 1, color)
+
+	var tex := ImageTexture.create_from_image(loss_image)
+	loss_map.texture = tex
+
+
+func _on_button_pressed() -> void:
+	#randomize parameters
+	m1 = randf()
+	b1 = randf()
+	
+	pass # Replace with function body.

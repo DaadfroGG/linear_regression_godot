@@ -53,4 +53,4 @@ theme_override_constants/margin_bottom = 10
 
 [node name="Label" type="Label" parent="HBoxContainer/MarginContainer3"]
 layout_mode = 2
-text = "I can write aything in these fields"
+text = "lorem ipsum blabla prout"
