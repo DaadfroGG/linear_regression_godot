@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqrxbpgmj4mm8"]
+[gd_scene load_steps=5 format=3 uid="uid://bqrxbpgmj4mm8"]
 
 [ext_resource type="Script" uid="uid://ceti1lauw1hth" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bcgvehjsala1b" path="res://graph_ui.tscn" id="2_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://dad1hlt4h1g5v" path="res://data_ui.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://beo5nrhjmk6to" path="res://loss_marker.gd" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://ct6m7ulxw7ihl" path="res://loss_guides.gd" id="5_lquwl"]
 
@@ -49,13 +48,29 @@ theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="Data" parent="VBoxContainer/HBoxContainer/MarginContainer2" instance=ExtResource("3_h2yge")]
+[node name="Data" type="Control" parent="VBoxContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
-[node name="MarginContainer5" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer" index="0"]
-custom_minimum_size = Vector2(256, 256)
+[node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -246.0
+offset_top = -180.5
+offset_right = 246.0
+offset_bottom = 180.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer5" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer"]
+custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
@@ -83,7 +98,7 @@ script = ExtResource("5_lquwl")
 m_label_offset = Vector2(0, -40)
 b_label_offset = Vector2(-80, -3)
 
-[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer" index="4"]
+[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -94,6 +109,29 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 text = "Randomize m and b"
 
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer4/Button" to="." method="_on_button_pressed"]
+[node name="MarginContainer6" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 0
 
-[editable path="VBoxContainer/HBoxContainer/MarginContainer2/Data"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer6"]
+layout_mode = 2
+text = "Loremipsumblabla"
+
+[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="HSlider" type="HSlider" parent="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer4/Button" to="." method="_on_button_pressed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer3/HSlider" to="." method="_on_learning_rate_change"]

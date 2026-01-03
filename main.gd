@@ -4,10 +4,12 @@ extends Control
 @onready var loss_map: TextureRect = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap
 @onready var loss_marker: Control = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap/LossMarker
 @onready var loss_guides: Control = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5/LossMap/LossGuides
+@onready var margin_container_5: MarginContainer = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer5
 
 @onready var graph: Graph2D = $VBoxContainer/HBoxContainer/MarginContainer/Graph2D
-@onready var data_ui: Data_UI = $VBoxContainer/HBoxContainer/MarginContainer2/Data
+@onready var learning_rate_label: Label = $VBoxContainer/HBoxContainer/MarginContainer2/Data/HBoxContainer/MarginContainer6/Label
 @export var learning_rate := 0.01
+
 const data = preload("res://data.csv")
 
 var time := 0.0
@@ -61,13 +63,15 @@ func _ready():
 	# Add the initial regression line
 	graph.add_function(func(x): return (m1 * (x / max_km) + b1) * max_price)
 	_generate_loss_landscape()
+	
+	#Initialize learning rate label
+	learning_rate_label.text = "learning rate : " + str(learning_rate)
 
 func _process(_delta):
 
 	# --- Gradient descent on normalized data ---
 	var grad_m := 0.0
 	var grad_b := 0.0
-	var loss := 0.0
 	var n := float(data.records.size())
 
 	for record in data.records:
@@ -77,12 +81,10 @@ func _process(_delta):
 		var error = y_pred - y
 		grad_m += error * x
 		grad_b += error
-		loss += error * error  # accumulate squared error
 
 	# Compute averages
 	grad_m *= (2.0 / n)
 	grad_b *= (2.0 / n)
-	loss /= n  # mean squared error
 
 	# Gradient descent update
 	m1 -= learning_rate * grad_m
@@ -97,9 +99,6 @@ func _process(_delta):
 	loss_marker.update_marker(marker_pos)
 
 	# --- De-normalized display values ---
-	var m_real := (m1 * max_price) / max_km
-	var b_real := b1 * max_price
-	data_ui.update_data(m_real, b_real, loss)
 	loss_guides.update_guides(marker_pos, m1, b1)
 
 	graph.functions[0] = func(x): return (m1 * (x / max_km) + b1) * max_price
@@ -107,8 +106,8 @@ func _process(_delta):
 	graph.queue_redraw()
 
 func _generate_loss_landscape():
-	var width := 256
-	var height := 256
+	var width : int = int(margin_container_5.custom_minimum_size.x)
+	var height : int = int(margin_container_5.custom_minimum_size.y)
 	var loss_image := Image.create_empty(width, height, false, Image.FORMAT_RGB8)
 
 	for y in height:
@@ -135,7 +134,11 @@ func _generate_loss_landscape():
 
 func _on_button_pressed() -> void:
 	#randomize parameters
-	m1 = randf()
-	b1 = randf()
-	
+	m1 = randf_range(m_range.x,m_range.y)
+	b1 = randf_range(b_range.x,b_range.y)
+	pass # Replace with function body.
+
+func _on_learning_rate_change(value: float) -> void:
+	learning_rate = value
+	learning_rate_label.text = "learning rate : " + str(learning_rate)
 	pass # Replace with function body.

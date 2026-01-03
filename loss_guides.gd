@@ -31,8 +31,8 @@ func _draw() -> void:
 		draw_line(Vector2(x, marker_pos.y), Vector2(x + step, marker_pos.y), color, 1.0)
 
 	# --- Text labels ---
-	var m_text := "m = %.3f" % m_value
-	var b_text := "b = %.3f" % b_value
+	var m_text := "θ₁ = %.3f" % m_value
+	var b_text := "θ₀ = %.3f" % b_value
 
 	# 'm' label near bottom axis (centered under marker line)
 	var m_text_size := font.get_string_size(m_text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
@@ -51,16 +51,12 @@ func _draw() -> void:
 		color
 	)
 
-	# 'b' label near left axis (aligned with marker line)
-	var b_text_size := font.get_string_size(b_text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
-	var b_text_pos := Vector2(
-		6 + b_label_offset.x,
-		marker_pos.y + font_size / 2 + b_label_offset.y
-	)
 
 	draw_string(
 		font,
-		b_text_pos,
+		Vector2(
+		b_label_offset.x,
+		marker_pos.y + float(font_size) / 2 + b_label_offset.y),
 		b_text,
 		HORIZONTAL_ALIGNMENT_LEFT,
 		-1,
